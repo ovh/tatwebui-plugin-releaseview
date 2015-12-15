@@ -267,8 +267,7 @@ angular.module('TatUi')
         self.currentDate = self.getCurrentDate();
         var filter = self.buildFilter({
           topic: self.topic,
-          treeView: 'fulltree',
-          onlyMsgRoot: 'true',
+          treeView: 'onetree',
           dateMinUpdate: self.data.intervalTimeStamp
         });
         return TatEngineMessagesRsc.list(filter).$promise.then(function(
@@ -292,8 +291,7 @@ angular.module('TatUi')
       self.loading = true;
       var filter = self.buildFilter({
         topic: self.topic,
-        treeView: 'fulltree',
-        onlyMsgRoot: 'true',
+        treeView: 'onetree',
         limit: self.data.count,
         skip: self.data.skip
       });

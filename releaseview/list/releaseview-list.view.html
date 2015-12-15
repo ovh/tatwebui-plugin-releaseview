@@ -47,7 +47,6 @@
   </div>
 
   <div class="message-releaseview-create">
-
       <div class="row releaseview-footer">
 					<form class="message-form" method="post" action="/">
 						<div style="display: flex">
@@ -55,7 +54,7 @@
 								<div class="message-popup-results">
 	              </div>
 								<textarea ng-enter="ctrl.createMessage()" dir="auto" name="msg" class="input-mdessage autogrow-short"
-                data-ng-model="ctrl.currentMessage" placeholder="Your message here with #tag"
+                data-ng-model="ctrl.currentMessage" placeholder="#release:0.1.0 and your title if you want"
                  style="height: 36px;"></textarea>
 								<i ng-click="ctrl.createMessage()" class="icon-paper-plane fa fa-send-o" title="{{ 'message_send' | translate}}"></i>
 							</div>
