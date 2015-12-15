@@ -370,7 +370,6 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
       };
 
       this.init($scope.message);
-
     }
   };
 });

@@ -211,16 +211,17 @@ angular.module('TatUi')
     this.filterSearch = function() {
       self.data.skip = 0;
       self.data.displayMore = true;
-      self.filter.text = self.tmpFilter.filterText ? self.tmpFilter.filterText :
+      self.filter.text =
+        self.tmpFilter.filterText ? self.tmpFilter.filterText : null;
+      self.filter.label =
+        self.tmpFilter.filterInLabel ? self.tmpFilter.filterInLabel : null;
+      self.filter.andLabel =
+        self.tmpFilter.filterAndLabel ? self.tmpFilter.filterAndLabel :
         null;
-      self.filter.label = self.tmpFilter.filterInLabel ? self.tmpFilter.filterInLabel :
-        null;
-      self.filter.andLabel = self.tmpFilter.filterAndLabel ? self.tmpFilter
-        .filterAndLabel : null;
-      self.filter.tag = self.tmpFilter.filterInTag ? self.tmpFilter.filterInTag :
-        null;
-      self.filter.andTag = self.tmpFilter.filterAndTag ? self.tmpFilter.filterAndTag :
-        null;
+      self.filter.tag =
+        self.tmpFilter.filterInTag ? self.tmpFilter.filterInTag : null;
+      self.filter.andTag =
+        self.tmpFilter.filterAndTag ? self.tmpFilter.filterAndTag : null;
 
       if (self.tmpFilter.idMessage === "-1") {
         $rootScope.$broadcast('topic-change', {
@@ -452,7 +453,32 @@ angular.module('TatUi')
           }
         }
       }
+      // not a release msg, do not display it
+      message.hide = true;
       return "";
+    };
+
+    this.capitalizeFirstLetter = function(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    this.computeDetails = function(message) {
+      var sections = {};
+      for (var i = 0; i < message.replies.length; i++) {
+        if (message.replies[i].text.indexOf("#") == 0) {
+          var mtype = message.replies[i].text
+            .substring(0, message.replies[i].text.indexOf(" "));
+          var mtype = this.capitalizeFirstLetter(mtype.replace("#", ""));
+          var text = message.replies[i].text
+            .substring(message.replies[i].text.indexOf(" "));
+          // msg starting with a tags, store it
+          if (!sections[mtype]) {
+            sections[mtype] = [];
+          }
+          sections[mtype].push(text);
+        }
+      }
+      message.sections = sections;
     };
 
     this.getTitleExceptRelease = function(message)  {

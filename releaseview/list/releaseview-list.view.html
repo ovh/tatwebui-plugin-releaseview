@@ -8,28 +8,28 @@
           <input type="text" class="form-control" placeholder="text" ng-model="ctrl.tmpFilter.filterText" aria-describedby="filter-fulltext">
         </div>
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="open,doing" ng-model="ctrl.tmpFilter.filterInLabel" aria-describedby="filter-labels">
+          <input type="text" class="form-control" placeholder="done,testing" ng-model="ctrl.tmpFilter.filterInLabel" aria-describedby="filter-labels">
           <span id="helpBlock" class="help-block">
             in <i class="fa fa-tags"></i> : Contains one or many labels of this list
           </span>
         </div>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="open,doing" ng-model="ctrl.tmpFilter.filterAndLabel" aria-describedby="filter-labels">
+          <input type="text" class="form-control" placeholder="done,testing" ng-model="ctrl.tmpFilter.filterAndLabel" aria-describedby="filter-labels">
           <span id="helpBlock" class="help-block">
             all <i class="fa fa-tags"></i> : Contains all labels in this list
           </span>
         </div>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="PCC,STOCKAGE" ng-model="ctrl.tmpFilter.filterInTag" aria-describedby="filter-tags">
+          <input type="text" class="form-control" placeholder="feat,fix" ng-model="ctrl.tmpFilter.filterInTag" aria-describedby="filter-tags">
           <span id="helpBlock" class="help-block">
             in <i class="glyphicon glyphicon-copyright-mark"></i> : Contains one or many tags of this list
           </span>
         </div>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="PCC,STOCKAGE" ng-model="ctrl.tmpFilter.filterAndTag" aria-describedby="filter-tags">
+          <input type="text" class="form-control" placeholder="feat,fix" ng-model="ctrl.tmpFilter.filterAndTag" aria-describedby="filter-tags">
           <span id="helpBlock" class="help-block">
             all <i class="glyphicon glyphicon-copyright-mark"></i> : Contains all tags in this list
           </span>
@@ -108,12 +108,16 @@
 
           </td>
           <td class="message-releaseview-wrapper">
-              <span ng-bind-html="ctrl.getTitleExceptRelease(msg) | linky | nl2br | parseTags:msg.tags"></span>
+              <h5 ng-bind-html="ctrl.getTitleExceptRelease(msg)"></h5>
               <table class="table table-striped" ng-if="msg.displayReplies || ctrl.expandReplies">
                 <tbody>
-                <tr data-ng-repeat="reply in msg.replies">
+                <tr data-ng-repeat="(key, replies) in msg.sections">
                   <td>
-                    <div title="author: reply.author.fullname, creation: {{reply.dateCreation * 1000| amCalendar}}, update: {{reply.dateUpdate * 1000| amCalendar}}" ng-bind-html="reply.text | linky | nl2br | parseTags:reply.tags">
+                    <div>
+                      <h6>{{key}}</h6>
+                    </div>
+                    <div ng-repeat="r in replies">
+                      {{r}}
                     </div>
                   </td>
                </tr>
@@ -121,7 +125,7 @@
              </table>
           </td>
           <td>
-            <button ng-if="msg.replies.length" title="display replies" class="btn btn-default" title="number of replies" data-ng-click="msg.displayReplies=!msg.displayReplies">
+            <button ng-if="msg.replies.length" title="display replies" class="btn btn-default" title="number of replies" data-ng-click="ctrl.computeDetails(msg);msg.displayReplies=!msg.displayReplies">
               <i class="fa fa-eye"></i> {{msg.replies.length}}
             </button>
           </td>
