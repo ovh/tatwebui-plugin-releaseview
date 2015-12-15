@@ -117,8 +117,7 @@
                       <h6>{{key}}</h6>
                     </div>
                     <ul>
-                      <li ng-repeat="r in replies">
-                        {{r}}
+                      <li ng-repeat="r in replies" ng-bind-html="r | linky">
                       </li>
                     </ul>
                   </td>

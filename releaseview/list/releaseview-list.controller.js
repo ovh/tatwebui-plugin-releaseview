@@ -26,7 +26,8 @@ angular.module('TatUi')
     $translate,
     $interval,
     $location,
-    $localStorage
+    $localStorage,
+    appConfiguration
   ) {
     'use strict';
 
@@ -82,9 +83,7 @@ angular.module('TatUi')
      * @description Try to load more messages
      */
     this.loadMore = function() {
-      console.log("loadMore");
       if (!self.loading) {
-        console.log("loading");
         self.moreMessage();
       }
     };
@@ -464,6 +463,7 @@ angular.module('TatUi')
 
     this.computeDetails = function(message) {
       var sections = {};
+      var keyword = appConfiguration.releaseview.keyword;
       for (var i = 0; i < message.replies.length; i++) {
         if (message.replies[i].text.indexOf("#") == 0) {
           var mtype = message.replies[i].text
@@ -475,6 +475,10 @@ angular.module('TatUi')
           if (!sections[mtype]) {
             sections[mtype] = [];
           }
+
+          text = text.replace("#" + keyword + ":",
+            appConfiguration.releaseview.tracker);
+
           sections[mtype].push(text);
         }
       }
