@@ -1,0 +1,165 @@
+<section class="message-releaseview-wrapper " data-ng-hide="message.hide">
+  <div class="row">
+
+    <div class="messages-run-actions-root" ng-hide="message.inReplyOfIDRoot != ''">
+        <button title="{{ (MessageReleaseviewItemCtrl.hasLiked(message) ? 'message_unlike' : 'message_like') | translate }}"
+                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.toggleLikeMessage(message)">
+             <i data-ng-class="{'fa fa-thumbs-o-up': !MessageReleaseviewItemCtrl.hasLiked(message), 'fa fa-thumbs-o-down':MessageReleaseviewItemCtrl.hasLiked(message)}"></i>
+         </button>
+
+        <button title="{{ 'message_reply' | translate }}"
+                class="btn btn-default" data-ng-click="replying=true">
+            <i class="fa fa-comment-o"></i>
+        </button>
+
+        <button title="Set to done"
+                ng-if="MessageReleaseviewItemCtrl.canDoneMessage"
+                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.doneMessage(message)">
+            <i class="fa fa-tasks"></i>
+            <i class="fa fa-check"></i>
+        </button>
+
+        <button class="btn btn-default"
+                title="{{ 'message_bookmark' | translate }}"
+                data-ng-click="MessageReleaseviewItemCtrl.bookmarkMessage()">
+            <i class="fa fa-bookmark-o"></i>
+        </button>
+
+        <button class="btn btn-default" data-ng-click="message.updating=true"
+        ng-if="isTopicUpdatableMsg || isTopicUpdatableAllMsg">
+            <i class="fa fa-pencil" title="{{ 'message_update' | translate }}"></i>
+        </button>
+
+        <button class="btn btn-default" data-ng-click="message.deleting=true"
+        ng-if="isTopicDeletableMsg || isTopicDeletableAllMsg">
+            <i class="fa fa-trash" title="{{ 'message_delete' | translate }}"></i>
+        </button>
+
+        <button title="{{ 'message_label_add' | translate }}"
+                class="btn btn-default" data-ng-click="addingLabel=!addingLabel">
+            <i class="fa fa-tag"></i>
+        </button>
+
+        <button title="{{ 'message_url' | translate }}"
+                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.urlMessage(message)">
+            <i class="fa fa-link"></i>
+        </button>
+
+        <div class="input-group" ng-show="addingLabel">
+          <div class="input-group-addon releaseview-colorpick">
+            <spectrum-colorpicker ng-show="addingLabel && MessageReleaseviewItemCtrl.initColor(message)"
+              ng-model="message.currentLabel.color"
+              palette="MessageReleaseviewItemCtrl.palette"
+              options="{showInput: true, showAlpha: true, preferredFormat:'Hex',
+                showPalette: true,
+                togglePaletteOnly: false}" ></spectrum-colorpicker>
+          </div>
+          <form data-ng-submit="MessageReleaseviewItemCtrl.addLabel(message)">
+            <input class="form-control" type="text" data-ng-model="message.currentLabel.text" placeholder="{{ 'message_label_add' | translate}}">
+          </form>
+        </div>
+    </div>
+
+      <user-display username="message.author.username" fullname="message.author.fullname"></user-display>
+      <span class="message-releaseview-date">{{message.dateCreation * 1000| amCalendar}}</span>
+      <span class="badge tlabel"
+            style="background-color: {{label.color}}; color: {{MessageReleaseviewItemCtrl.getBrightness(label.color)>128 ? '#000000' : '#ffffff' }}"
+            data-ng-repeat="label in message.labels track by label.text">
+          <i class="fa fa-tags"></i> {{label.text}}
+          <a role="button" data-ng-click="MessageReleaseviewItemCtrl.removeLabel(message, label.text)">X</a>
+      </span>
+
+      <div class="message-releaseview-content" ng-bind-html="message.text | linky | nl2br | parseTags:message.tags"></div>
+
+      <div class="message-releaseview-reply" data-ng-show="replying">
+          <textarea class="form-control" data-ng-model="MessageReleaseviewItemCtrl.replyText"></textarea>
+          <button class="btn btn-primary"
+                  data-ng-click="MessageReleaseviewItemCtrl.replyMessage(message); $event.stopPropagation();">
+              <i class="fa fa-reply-all"></i>
+              Reply
+          </button>
+          <button class="btn btn-default" data-ng-click="replying=false">
+              <i class="fa fa-ban"></i>
+              {{ 'shared_common_cancel' | translate }}
+          </button>
+      </div>
+      <div class="message-reply" data-ng-show="message.updating">
+          <textarea class="form-control" data-ng-model="message.text"></textarea>
+          <button class="btn btn-primary"
+                  data-ng-click="MessageReleaseviewItemCtrl.updateMessage(message); $event.stopPropagation();">
+              <i class="fa fa-pencil-square-o"></i>
+              Update
+          </button>
+          <button class="btn btn-default" data-ng-click="message.updating=false">
+              <i class="fa fa-ban"></i>
+              {{ 'shared_common_cancel' | translate }}
+          </button>
+      </div>
+      <div data-ng-show="message.deleting">
+          <button class="btn btn-danger"
+                  data-ng-click="MessageReleaseviewItemCtrl.deleteMessage(message);">
+              <i class="fa fa-trash"></i>
+              Confirm Delete <span ng-show="message.replies.length">message and replies</span>
+          </button>
+          <button class="btn btn-default" data-ng-click="message.deleting=false">
+              <i class="fa fa-ban"></i>
+              {{ 'shared_common_cancel' | translate }}
+          </button>
+      </div>
+  </div>
+
+  <div class="releaseview-replies-right" ng-if="message.replies.length">
+    <button title="search in replies" class="btn btn-xs" ng-if="!message.searching" data-ng-click="message.searching=true">
+      <i class="fa fa-search"></i>
+    </button>
+
+    <div class="input-group" ng-if="message.searching">
+      <div class="input-group-addon" data-ng-click="message.searching=!message.searching"><i class="fa fa-search"></i></div>
+      <input type="search" class="form-control" data-ng-model="message.search" placeholder="search in reply">
+      <div class="input-group-addon" data-ng-click="message.searching=false"><i class="fa fa-ban"></i></div>
+    </div>
+
+    <table class="table table-striped">
+      <tbody>
+      <tr data-ng-repeat="reply in message.replies | filter:message.search">
+        <td data-ng-if="!reply.hide">
+          <i data-ng-show="MessageReleaseviewItemCtrl.hasLiked(reply)" class="fa fa-heart like"></i>
+          <user-display username="reply.author.username" fullname="reply.author.fullname"></user-display>
+          <span data-ng-show="reply.nbLikes" class="likers">
+              {{reply.nbLikes}} <i class="fa fa-thumbs-o-up"></i>
+          </span>
+          <span class="message-releaseview-date" title="creation: {{reply.dateCreation * 1000| amCalendar}}, update: {{reply.dateUpdate * 1000| amCalendar}}">
+            {{reply.dateCreation * 1000| amCalendar}}
+          </span>
+          <button class="btn btn-xs" data-ng-click="reply.updating=true"><i class="fa fa-pencil"></i></button>
+          <button class="btn btn-xs" data-ng-click="reply.deleting=true"><i class="fa fa-trash"></i></button>
+          <div ng-bind-html="reply.text | linky | nl2br | parseTags:reply.tags"></div>
+          <div ng-if="reply.updating">
+            <textarea class="form-control" data-ng-model="reply.text"></textarea>
+            <button class="btn btn-primary" data-ng-click="MessageReleaseviewItemCtrl.updateMessage(reply);">
+                <i class="fa fa-pencil-square-o"></i>
+                Update
+            </button>
+            <button class="btn btn-default" data-ng-click="reply.updating=false">
+                <i class="fa fa-ban"></i>
+                {{ 'shared_common_cancel' | translate }}
+            </button>
+          </div>
+          <div data-ng-if="reply.deleting">
+              <button class="btn btn-danger"
+                      data-ng-click="MessageReleaseviewItemCtrl.deleteMessage(reply);">
+                  <i class="fa fa-trash"></i>
+                  Confirm Delete
+              </button>
+              <button class="btn btn-default" data-ng-click="reply.deleting=false">
+                  <i class="fa fa-ban"></i>
+                  {{ 'shared_common_cancel' | translate }}
+              </button>
+          </div>
+        </td>
+     </tr>
+     </tbody>
+   </table>
+ </div>
+
+</section>

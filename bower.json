@@ -1,0 +1,24 @@
+{
+  "name": "tatwebui-plugin-releaseview",
+  "version": "0.0.1",
+  "authors": [
+    "Yvonnick Esnault <yvonnick.esnault@corp.ovh.com>"
+  ],
+  "description": "Standard View",
+  "tatwebui-plugin": [
+    "releaseview/list/releaseview-list.directive.js",
+    "releaseview/list/releaseview-list.controller.js",
+    "releaseview/list/releaseview-list.route.js"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

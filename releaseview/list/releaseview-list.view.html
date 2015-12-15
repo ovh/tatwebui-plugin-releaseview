@@ -1,0 +1,166 @@
+<div class="wrapper message-releaseview-manager">
+
+  <div movable-dialog title="'Filter'" ng-model="ctrl.filterPosition">
+    <div class="filter-dialog">
+      <form>
+        <div class="input-group">
+          <span class="input-group-addon" id="filter-fulltext"><i class="fa fa-font"></i></span>
+          <input type="text" class="form-control" placeholder="text" ng-model="ctrl.tmpFilter.filterText" aria-describedby="filter-fulltext">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="open,doing" ng-model="ctrl.tmpFilter.filterInLabel" aria-describedby="filter-labels">
+          <span id="helpBlock" class="help-block">
+            in <i class="fa fa-tags"></i> : Contains one or many labels of this list
+          </span>
+        </div>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="open,doing" ng-model="ctrl.tmpFilter.filterAndLabel" aria-describedby="filter-labels">
+          <span id="helpBlock" class="help-block">
+            all <i class="fa fa-tags"></i> : Contains all labels in this list
+          </span>
+        </div>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="PCC,STOCKAGE" ng-model="ctrl.tmpFilter.filterInTag" aria-describedby="filter-tags">
+          <span id="helpBlock" class="help-block">
+            in <i class="glyphicon glyphicon-copyright-mark"></i> : Contains one or many tags of this list
+          </span>
+        </div>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="PCC,STOCKAGE" ng-model="ctrl.tmpFilter.filterAndTag" aria-describedby="filter-tags">
+          <span id="helpBlock" class="help-block">
+            all <i class="glyphicon glyphicon-copyright-mark"></i> : Contains all tags in this list
+          </span>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-xs" ng-click="ctrl.filterSearch()">Search</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div data-ng-hide="ctrl.data.isTopicRw" class="alert alert-info pull-right">
+    {{ 'message_read_only' | translate}}
+  </div>
+
+  <div class="message-releaseview-create">
+
+      <div class="row releaseview-footer">
+					<form class="message-form" method="post" action="/">
+						<div style="display: flex">
+							<div class="input-message-container" data-ng-show="ctrl.data.isTopicRw">
+								<div class="message-popup-results">
+	              </div>
+								<textarea ng-enter="ctrl.createMessage()" dir="auto" name="msg" class="input-mdessage autogrow-short"
+                data-ng-model="ctrl.currentMessage" placeholder="Your message here with #tag"
+                 style="height: 36px;"></textarea>
+								<i ng-click="ctrl.createMessage()" class="icon-paper-plane fa fa-send-o" title="{{ 'message_send' | translate}}"></i>
+							</div>
+              <div class="filter" data-ng-click="ctrl.filterPosition.visible = true">
+								<i class="fa fa-filter"></i>
+							</div>
+              <div class="filter" title="Toggle display replies" data-ng-click="ctrl.expandReplies=!ctrl.expandReplies">
+								<i ng-class="ctrl.expandReplies ? 'fa fa-compress': 'fa fa-expand'"></i>
+							</div>
+						</div>
+						<div data-ng-if="ctrl.currentMessage.length > 0" class="users-typing"><i>{{ 'message_characters_left' | translate }}: {{ctrl.data.topic.maxlength - ctrl.currentMessage.length}}</i></div>
+
+						<div class="formatting-tips" aria-hidden="true" dir="auto"></div>
+					</form>
+          <span class="message-filters">
+            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.text"><i class="fa fa-font"></i> {{ctrl.filter.text}}
+                <a role="button" ng-click="ctrl.tmpFilter.filterText = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
+            </span>
+            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.label">in <i class="fa fa-tags"></i> : {{ctrl.filter.label}}
+                <a role="button" ng-click="ctrl.tmpFilter.filterInLabel = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
+            </span>
+            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.andLabel">all <i class="fa fa-tags"></i> : {{ctrl.filter.andLabel}}
+                <a role="button" ng-click="ctrl.tmpFilter.filterAndLabel = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
+            </span>
+            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.tag">in <i class="glyphicon glyphicon-copyright-mark"></i> {{ctrl.filter.tag}}
+                <a role="button" ng-click="ctrl.tmpFilter.filterInTag = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
+            </span>
+            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.andTag">all <i class="glyphicon glyphicon-copyright-mark"></i> : {{ctrl.filter.andTag}}
+                <a role="button" ng-click="ctrl.tmpFilter.filterAndTag = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
+            </span>
+            <span class="badge" data-ng-if="ctrl.filter.idMessage"> <i class="fa fa-envelope" title="message"></i> {{ctrl.filter.idMessage}}
+                <a role="button" ng-click="ctrl.tmpFilter.idMessage = '-1'; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
+            </span>
+          </span>
+			</div>
+  </div>
+
+  <div class="row">
+    <div data-ng-class="(message && message.displayed) ? 'message-releaseview-list col-md-7': 'message-releaseview-list col-md-12'">
+      <table class="table table-striped">
+        <tbody>
+        <tr ng-repeat="msg in ctrl.data.messages" ng-class="msg.displayed ? '': ''" class="message-releaseview-wrapper" ng-show="!msg.hide">
+          <td>
+            <span data-ng-show="msg.nbLikes" class="likers">
+                {{msg.nbLikes}} <i class="fa fa-thumbs-o-up"></i>
+            </span>
+            <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
+              <h4>Release <b><span ng-bind-html="ctrl.getRelease(msg)"></span></b></h4>
+              {{msg.dateCreation * 1000| amDateFormat:'DD/MM, HH:mm:ss'}}
+            </div>
+
+          </td>
+          <td class="message-releaseview-wrapper">
+              <span ng-bind-html="ctrl.getTitleExceptRelease(msg) | linky | nl2br | parseTags:msg.tags"></span>
+              <table class="table table-striped" ng-if="msg.displayReplies || ctrl.expandReplies">
+                <tbody>
+                <tr data-ng-repeat="reply in msg.replies">
+                  <td>
+                    <div title="author: reply.author.fullname, creation: {{reply.dateCreation * 1000| amCalendar}}, update: {{reply.dateUpdate * 1000| amCalendar}}" ng-bind-html="reply.text | linky | nl2br | parseTags:reply.tags">
+                    </div>
+                  </td>
+               </tr>
+               </tbody>
+             </table>
+          </td>
+          <td>
+            <button ng-if="msg.replies.length" title="display replies" class="btn btn-default" title="number of replies" data-ng-click="msg.displayReplies=!msg.displayReplies">
+              <i class="fa fa-eye"></i> {{msg.replies.length}}
+            </button>
+          </td>
+          <td>
+            <span data-ng-repeat="label in msg.labels track by label.text"
+                class="badge tlabel"
+                style="background-color: {{label.color}}; color: {{ctrl.getBrightness(label.color)>128 ? '#000000' : '#ffffff' }}">
+              <i class="fa fa-tags"></i> {{label.text}}
+            </span>
+          </td>
+          <td>
+            <a ng-class="msg.displayed ? 'btn btn-xs btn-primary': 'btn btn-xs'" data-ng-href="#" data-ng-click="ctrl.toggleMessage(msg)">
+              <i ng-class="msg.displayed ? 'fa fa-angle-down': 'fa fa-angle-right'"></i></a>
+          </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <div class="col-md-5" ng-if="message && message.displayed">
+      <div class="releaseview-message-right">
+        <button class="btn btn-default btn-xs pull-right" data-ng-click="ctrl.closeMessage()">X</button>
+        <messages-releaseview-item
+               data-topic="ctrl.topic"
+               data-message="message"
+               data-is-topic-bookmarks="ctrl.isTopicBookmarks"
+               data-is-topic-tasks="ctrl.isTopicTasks"
+               data-is-topic-deletable-msg="ctrl.data.isTopicDeletableMsg"
+               data-is-topic-updatable-msg="ctrl.data.isTopicUpdatableMsg"
+               data-is-topic-deletable-all-msg="ctrl.data.isTopicDeletableAllMsg"
+               data-is-topic-updatable-all-msg="ctrl.data.isTopicUpdatableAllMsg"
+               data-is-topic-rw="ctrl.isTopicRw"></messages-releaseview-item>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <button data-ng-disabled="!ctrl.data.displayMore" data-ng-click="ctrl.loadMore()" class="btn btn-default">
+      <span data-ng-show="!ctrl.data.displayMore">No</span> More
+    </button>
+  </div>
+</div>
