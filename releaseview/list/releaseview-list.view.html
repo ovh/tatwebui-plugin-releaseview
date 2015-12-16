@@ -93,7 +93,7 @@
       <table class="table table-striped">
         <tbody>
         <tr ng-repeat="msg in ctrl.data.messages" ng-class="msg.displayed ? '': ''" class="message-releaseview-wrapper" ng-show="!msg.hide">
-          <td  style="color: {{msg.releaseColor}};border-left: 8px solid {{msg.releaseColor}};">
+          <td  style="border-left: 8px solid {{msg.releaseColor}};">
             <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
               <h3>Release <b><span ng-bind-html="ctrl.getRelease(msg)"></span></b></h3>
               {{msg.dateUpdate * 1000  | amCalendar}}

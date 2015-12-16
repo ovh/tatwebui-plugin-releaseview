@@ -470,6 +470,10 @@ angular.module('TatUi')
           var mtype = message.replies[i].text
             .substring(0, message.replies[i].text.indexOf(" "));
           var mtype = this.capitalizeFirstLetter(mtype.replace("#", ""));
+          // delete last ':'
+          if (mtype.indexOf(":") == mtype.length - 1) {
+            mtype = mtype.slice(0, -1);
+          }
           var text = message.replies[i].text
             .substring(message.replies[i].text.indexOf(" "));
           // msg starting with a tags, store it
