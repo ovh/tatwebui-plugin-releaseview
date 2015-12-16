@@ -96,7 +96,7 @@
           <td  style="color: {{msg.releaseColor}};border-left: 8px solid {{msg.releaseColor}};">
             <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
               <h3>Release <b><span ng-bind-html="ctrl.getRelease(msg)"></span></b></h3>
-              {{msg.dateCreation * 1000  | amCalendar}}
+              {{msg.dateUpdate * 1000  | amCalendar}}
             </div>
             <span data-ng-repeat="label in msg.labels track by label.text"
                 class="badge tlabel"
