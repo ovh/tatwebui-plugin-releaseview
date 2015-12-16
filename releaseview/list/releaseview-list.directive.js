@@ -135,7 +135,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
         }
         message.currentLabel = {};
         message.currentLabel.text = "preprod";
-        message.currentLabel.color = "#ffe599";
+        message.currentLabel.color = "#ec971f";
         self.removeLabel(message, "done");
         self.addLabel(message);
       };
