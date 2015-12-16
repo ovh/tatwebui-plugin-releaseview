@@ -2,16 +2,19 @@
   <div class="row">
 
     <div class="messages-run-actions-root" ng-hide="message.inReplyOfIDRoot != ''">
-        <button title="Set to done"
-                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.doneMessage(message)">
-            <i class="fa fa-check"></i> Set to Done
+        <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'develop')">
+            <i class="fa fa-tag"></i> Set to Develop
         </button>
-
-        <button title="Set to preprod"
-                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.preprodMessage(message)">
-            <i class="fa fa-check"></i> Set to Preprod
+        <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'staging')">
+            <i class="fa fa-tag"></i> Set to Staging
         </button>
-
+        <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'preprod')">
+            <i class="fa fa-tag"></i> Set to Preprod
+        </button>
+        <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'done')">
+            <i class="fa fa-tag"></i> Set to Done
+        </button>
+        <br>
         <button title="{{ 'message_reply' | translate }}"
                 class="btn btn-default" data-ng-click="replying=true">
             <i class="fa fa-comment-o"></i>

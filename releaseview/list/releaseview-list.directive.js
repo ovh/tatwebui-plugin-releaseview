@@ -118,27 +118,28 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
         return $scope.message.text;
       };
 
-      this.doneMessage = function(message) {
-        if (self.containsLabel(message, "done")) {
+      this.setTo = function(message, label) {
+        var choices = {};
+        choices["done"] = "#14892c";
+        choices["preprod"] = "#ec971f";
+        choices["staging"] = "#3d85c6";
+        choices["develop"] = "#cccccc";
+
+        if (self.containsLabel(message, label)) {
           return;
         }
-        message.currentLabel = {};
-        message.currentLabel.text = "done";
-        message.currentLabel.color = "#14892c"; // green
-        self.removeLabel(message, "preprod");
+        message.currentLabel = {
+          text: label,
+          color: choices[label]
+        };
+        for (var l in choices) {
+          if (l != label) {
+            self.removeLabel(message, l);
+          }
+        };
         self.addLabel(message);
       };
 
-      this.preprodMessage = function(message) {
-        if (self.containsLabel(message, "preprod")) {
-          return;
-        }
-        message.currentLabel = {};
-        message.currentLabel.text = "preprod";
-        message.currentLabel.color = "#ec971f";
-        self.removeLabel(message, "done");
-        self.addLabel(message);
-      };
 
       /**
        * @ngdoc function
@@ -288,6 +289,9 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
        */
       this.removeLabel = function(message, labelText) {
         if (!message.labels) {
+          return;
+        }
+        if (!self.containsLabel(message, labelText)) {
           return;
         }
         var toRefresh = false;
