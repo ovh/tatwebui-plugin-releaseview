@@ -49,8 +49,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
       TatEngineMessagesRsc, TatEngine,
       Authentication, $http, appConfiguration) {
       var self = this;
-      this.isTopicBookmarks = false;
-      this.canDoneMessage = false;
+      this.isTopicBookmarks = false
 
       self.setInToDoneText = "";
       this.getBrightness = function(rgb) {
@@ -119,18 +118,26 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
         return $scope.message.text;
       };
 
-      this.addLabelDone = function(message) {
+      this.doneMessage = function(message) {
+        if (self.containsLabel(message, "done")) {
+          return;
+        }
         message.currentLabel = {};
         message.currentLabel.text = "done";
         message.currentLabel.color = "#14892c"; // green
-        self.removeLabel(message, "doing");
+        self.removeLabel(message, "preprod");
         self.addLabel(message);
-        self.canDoneMessage = false;
       };
 
-      this.doneMessage = function(message) {
-        self.addLabelDone(message);
-        self.computeFlags(message);
+      this.preprodMessage = function(message) {
+        if (self.containsLabel(message, "preprod")) {
+          return;
+        }
+        message.currentLabel = {};
+        message.currentLabel.text = "preprod";
+        message.currentLabel.color = "#ffe599";
+        self.removeLabel(message, "done");
+        self.addLabel(message);
       };
 
       /**
@@ -308,7 +315,6 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
         if (toRefresh)  {
           message.labels = newList;
         }
-        self.computeFlags(message);
       };
 
       this.urlMessage = function(message) {
@@ -358,14 +364,6 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
         if ($scope.topic.indexOf("Private/" + Authentication.getIdentity()
             .username + "/Bookmarks") === 0) {
           self.isTopicBookmarks = true;
-        }
-        this.computeFlags(message);
-      };
-
-      this.computeFlags = function(message) {
-        self.canDoneMessage = false;
-        if (!self.containsLabel(message, "done")) {
-          self.canDoneMessage = true;
         }
       };
 

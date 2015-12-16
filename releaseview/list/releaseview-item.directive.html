@@ -2,21 +2,19 @@
   <div class="row">
 
     <div class="messages-run-actions-root" ng-hide="message.inReplyOfIDRoot != ''">
-        <button title="{{ (MessageReleaseviewItemCtrl.hasLiked(message) ? 'message_unlike' : 'message_like') | translate }}"
-                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.toggleLikeMessage(message)">
-             <i data-ng-class="{'fa fa-thumbs-o-up': !MessageReleaseviewItemCtrl.hasLiked(message), 'fa fa-thumbs-o-down':MessageReleaseviewItemCtrl.hasLiked(message)}"></i>
-         </button>
+        <button title="Set to done"
+                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.doneMessage(message)">
+            <i class="fa fa-check"></i> Set to Done
+        </button>
+
+        <button title="Set to preprod"
+                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.preprodMessage(message)">
+            <i class="fa fa-check"></i> Set to Preprod
+        </button>
 
         <button title="{{ 'message_reply' | translate }}"
                 class="btn btn-default" data-ng-click="replying=true">
             <i class="fa fa-comment-o"></i>
-        </button>
-
-        <button title="Set to done"
-                ng-if="MessageReleaseviewItemCtrl.canDoneMessage"
-                class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.doneMessage(message)">
-            <i class="fa fa-tasks"></i>
-            <i class="fa fa-check"></i>
         </button>
 
         <button class="btn btn-default"
@@ -123,11 +121,7 @@
       <tbody>
       <tr data-ng-repeat="reply in message.replies | filter:message.search">
         <td data-ng-if="!reply.hide">
-          <i data-ng-show="MessageReleaseviewItemCtrl.hasLiked(reply)" class="fa fa-heart like"></i>
           <user-display username="reply.author.username" fullname="reply.author.fullname"></user-display>
-          <span data-ng-show="reply.nbLikes" class="likers">
-              {{reply.nbLikes}} <i class="fa fa-thumbs-o-up"></i>
-          </span>
           <span class="message-releaseview-date" title="creation: {{reply.dateCreation * 1000| amCalendar}}, update: {{reply.dateUpdate * 1000| amCalendar}}">
             {{reply.dateCreation * 1000| amCalendar}}
           </span>

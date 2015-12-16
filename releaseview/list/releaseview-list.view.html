@@ -61,12 +61,8 @@
               <div class="filter" data-ng-click="ctrl.filterPosition.visible = true">
 								<i class="fa fa-filter"></i>
 							</div>
-              <div class="filter" title="Toggle display replies" data-ng-click="ctrl.expandReplies=!ctrl.expandReplies">
-								<i ng-class="ctrl.expandReplies ? 'fa fa-compress': 'fa fa-expand'"></i>
-							</div>
 						</div>
 						<div data-ng-if="ctrl.currentMessage.length > 0" class="users-typing"><i>{{ 'message_characters_left' | translate }}: {{ctrl.data.topic.maxlength - ctrl.currentMessage.length}}</i></div>
-
 						<div class="formatting-tips" aria-hidden="true" dir="auto"></div>
 					</form>
           <span class="message-filters">
@@ -97,24 +93,25 @@
       <table class="table table-striped">
         <tbody>
         <tr ng-repeat="msg in ctrl.data.messages" ng-class="msg.displayed ? '': ''" class="message-releaseview-wrapper" ng-show="!msg.hide">
-          <td>
-            <span data-ng-show="msg.nbLikes" class="likers">
-                {{msg.nbLikes}} <i class="fa fa-thumbs-o-up"></i>
-            </span>
+          <td  style="color: {{msg.releaseColor}};border-left: 8px solid {{msg.releaseColor}};">
             <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
-              <h4>Release <b><span ng-bind-html="ctrl.getRelease(msg)"></span></b></h4>
-              {{msg.dateCreation * 1000| amDateFormat:'DD/MM, HH:mm:ss'}}
+              <h3>Release <b><span ng-bind-html="ctrl.getRelease(msg)"></span></b></h3>
+              {{msg.dateCreation * 1000  | amCalendar}}
             </div>
-
+            <span data-ng-repeat="label in msg.labels track by label.text"
+                class="badge tlabel"
+                style="background-color: {{label.color}}; color: {{ctrl.getBrightness(label.color)>128 ? '#000000' : '#ffffff' }}">
+              <i class="fa fa-tags"></i> {{label.text}}
+            </span>
           </td>
           <td class="message-releaseview-wrapper">
-              <h5 ng-bind-html="ctrl.getTitleExceptRelease(msg)"></h5>
-              <table class="table table-striped" ng-if="msg.displayReplies || ctrl.expandReplies">
+              <h4 ng-bind-html="ctrl.getTitleExceptRelease(msg)"></h4>
+              <table class="table table-striped">
                 <tbody>
                 <tr data-ng-repeat="(key, replies) in msg.sections">
                   <td>
                     <div>
-                      <h6>{{key}}</h6>
+                      <h4>{{key}}</h4>
                     </div>
                     <ul>
                       <li ng-repeat="r in replies" ng-bind-html="r | linky">
@@ -124,18 +121,6 @@
                </tr>
                </tbody>
              </table>
-          </td>
-          <td>
-            <button ng-if="msg.replies.length" title="display replies" class="btn btn-default" title="number of replies" data-ng-click="ctrl.computeDetails(msg);msg.displayReplies=!msg.displayReplies">
-              <i class="fa fa-eye"></i> {{msg.replies.length}}
-            </button>
-          </td>
-          <td>
-            <span data-ng-repeat="label in msg.labels track by label.text"
-                class="badge tlabel"
-                style="background-color: {{label.color}}; color: {{ctrl.getBrightness(label.color)>128 ? '#000000' : '#ffffff' }}">
-              <i class="fa fa-tags"></i> {{label.text}}
-            </span>
           </td>
           <td>
             <a ng-class="msg.displayed ? 'btn btn-xs btn-primary': 'btn btn-xs'" data-ng-href="#" data-ng-click="ctrl.toggleMessage(msg)">

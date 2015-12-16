@@ -125,6 +125,9 @@ angular.module('TatUi')
     this.mergeMessages = function(dest, source) {
       if (source && _.isArray(source)) {
         for (var i = 0; i < source.length; i++) {
+          if (source[i].replies) {
+            this.computeDetails(source[i]);
+          }
           var origin = _.find(dest, {
             _id: source[i]._id
           });
@@ -134,8 +137,6 @@ angular.module('TatUi')
             }
             self.mergeMessages(origin.replies, source[i].replies);
             origin.labels = source[i].labels;
-            origin.likers = source[i].likers;
-            origin.nbLikes = source[i].nbLikes;
             origin.tags = source[i].tags;
           } else {
             if (!self.data.intervalTimeStamp) {
@@ -465,7 +466,7 @@ angular.module('TatUi')
       var sections = {};
       var keyword = appConfiguration.releaseview.keyword;
       for (var i = 0; i < message.replies.length; i++) {
-        if (message.replies[i].text.indexOf("#") == 0) {
+        if (message.replies[i].text.indexOf("#") == 0 && message.replies) {
           var mtype = message.replies[i].text
             .substring(0, message.replies[i].text.indexOf(" "));
           var mtype = this.capitalizeFirstLetter(mtype.replace("#", ""));
@@ -482,6 +483,12 @@ angular.module('TatUi')
           sections[mtype].push(text);
         }
       }
+      if (message.labels) {
+        message.releaseColor = message.labels[0].color;
+      } else {
+        message.releaseColor = "transparent";
+      }
+
       message.sections = sections;
     };
 
