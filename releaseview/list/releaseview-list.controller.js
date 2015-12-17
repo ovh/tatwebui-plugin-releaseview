@@ -462,7 +462,6 @@ angular.module('TatUi')
           }
         }
       }
-      console.log("Compute : ", message);
       // not a release msg, do not display it
       if (message.release === "") {
         message.hide = true;
