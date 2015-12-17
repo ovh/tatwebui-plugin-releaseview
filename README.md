@@ -6,7 +6,7 @@ See Tat Engine for more information: https://github.com/ovh/tat
 
 ## Screenshot
 
-[Release View](https://github.com/ovh/tatwebui-plugin-releaseview/raw/master/screenshot_view.png)
+![Release View](https://raw.githubusercontent.com/ovh/tatwebui-plugin-releaseview/master/screenshot_view.png)
 
 
 ## Configuration
