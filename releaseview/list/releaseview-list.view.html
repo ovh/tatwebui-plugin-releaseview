@@ -94,10 +94,16 @@
         <tbody>
         <tr ng-repeat="msg in ctrl.data.messages" ng-class="msg.displayed ? '': ''" class="message-releaseview-wrapper" ng-show="!msg.hide">
           <td  style="border-left: 8px solid {{msg.releaseColor}};">
+
             <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
-              <h3><b><span ng-bind-html="ctrl.getRelease(msg)"></span></b></h3>
-              {{msg.dateUpdate * 1000  | amCalendar}}
+              <h3><b><span ng-bind-html="msg.release"></span></b></h3>
+              <span data-ng-if="msg.releaseDate"> {{msg.releaseDate}}</span>
+              <span data-ng-if="!msg.releaseDate"> {{msg.dateUpdate * 1000  | amCalendar}}</span>
             </div>
+            <span class="badge" data-ng-repeat="attr in msg.attrs track by $index">
+              {{attr}}
+            </span>
+
             <span data-ng-repeat="label in msg.labels track by label.text"
                 class="badge tlabel"
                 style="background-color: {{label.color}}; color: {{ctrl.getBrightness(label.color)>128 ? '#000000' : '#ffffff' }}">
@@ -108,13 +114,13 @@
               <h4 ng-bind-html="ctrl.getTitleExceptRelease(msg)"></h4>
               <table>
                 <tbody>
-                <tr data-ng-repeat="(key, replies) in msg.sections">
+                <tr data-ng-repeat="(key, replies) in msg.sections track by $index">
                   <td>
                     <div>
                       <h4>{{key}}</h4>
                     </div>
                     <ul>
-                      <li ng-repeat="r in replies" ng-bind-html="r | linky">
+                      <li ng-repeat="r in replies track by $index" ng-bind-html="r | linky">
                       </li>
                     </ul>
                   </td>

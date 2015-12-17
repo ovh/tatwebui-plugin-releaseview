@@ -28,6 +28,35 @@ Example : if you write a
 message like "feat: a big feature #RELEASE_KEYWORD:AAA-1", an url will be generated on tatwebui :
 $RELEASE_TRACKER/AAA-1
 
+## Using
+
+A release message :
+
+```
+#release:test a title
+```
+
+A release message with attributes :
+
+```
+#release:test #attr:EU #attr:CA a title
+```
+
+A release message with a forced date and attributes :
+
+```
+#release:test #attr:EU #attr:CA #date:2015-12-24 a title
+```
+
+And replies to complete information about release :
+
+```
+#fix: a fix here
+```
+
+```
+#feat: a new feature
+```
 
 # Hacking
 

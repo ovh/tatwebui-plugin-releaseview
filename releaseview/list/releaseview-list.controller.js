@@ -445,17 +445,28 @@ angular.module('TatUi')
       $scope.message = null;
     };
 
-    this.getRelease = function(message) {
+    this.computeRelease = function(message) {
+      message.release = "";
+      message.releaseDate = null;
+      message.attrs = [];
       if (message && message.tags) {
         for (var i = 0; i < message.tags.length; i++) {
           if (message.tags[i].indexOf("release:") == 0) {
-            return message.tags[i].substring(8);
+            message.release = message.tags[i].substring(8);
+          }
+          if (message.tags[i].indexOf("attr:") == 0) {
+            message.attrs.push(message.tags[i].substring(5));
+          }
+          if (message.tags[i].indexOf("date:") == 0) {
+            message.releaseDate = message.tags[i].substring(5);
           }
         }
       }
+      console.log("Compute : ", message);
       // not a release msg, do not display it
-      message.hide = true;
-      return "";
+      if (message.release === "") {
+        message.hide = true;
+      }
     };
 
     this.capitalizeFirstLetter = function(string) {
@@ -497,8 +508,10 @@ angular.module('TatUi')
     };
 
     this.getTitleExceptRelease = function(message)  {
-      return message.text.replace("#release:" + this.getRelease(message),
-        "");
+      this.computeRelease(message);
+      return message.text.replace(/#release:[\w\d\-@\.\/]*/g, "")
+        .replace(/#attr:[\w\d\-@\.\/]*/g, "")
+        .replace(/#date:[\w\d\-@\.\/]*/g, "");
     }
 
     this.containsLabel = function(message, labelText) {
