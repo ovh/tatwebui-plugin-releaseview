@@ -4,6 +4,11 @@ This is a plugin for Tat Webui, see https://github.com/ovh/tatwebui
 
 See Tat Engine for more information: https://github.com/ovh/tat
 
+## Screenshot
+
+[Release View](https://github.com/ovh/tatwebui-plugin-releaseview/raw/master/screenshot_view.png)
+
+
 ## Configuration
 In plugin.tpl.json file, add this line :
 
@@ -48,7 +53,7 @@ A release message with a forced date and attributes :
 #release:test #attr:EU #attr:CA #date:2015-12-24 a title
 ```
 
-And replies to complete information about release :
+And replies to complete informations about release :
 
 ```
 #fix: a fix here
@@ -57,6 +62,8 @@ And replies to complete information about release :
 ```
 #feat: a new feature
 ```
+
+First tag of reply will become a section (#feat, #fix, #whatever)
 
 # Hacking
 
