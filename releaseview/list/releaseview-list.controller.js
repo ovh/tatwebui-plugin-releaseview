@@ -491,9 +491,8 @@ angular.module('TatUi')
             sections[mtype] = [];
           }
 
-          text = text.replace("#" + keyword + ":",
-            appConfiguration.releaseview.tracker);
-
+          var regex = new RegExp("#" + keyword + ":", 'g');
+          text = text.replace(regex, appConfiguration.releaseview.tracker);
           sections[mtype].push(text);
         }
       }
