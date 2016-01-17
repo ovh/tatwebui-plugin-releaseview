@@ -57,7 +57,8 @@ angular.module('TatUi')
       isNoFilter: true,
       isSureWithNoFilter: true,
       displayOnCall: (this.topic.indexOf("OnCall") > 1),
-      displayMore: true
+      displayMore: true,
+      showNewRelease: false
     };
 
     this.filterPosition = {
