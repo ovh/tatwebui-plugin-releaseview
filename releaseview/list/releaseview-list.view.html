@@ -1,97 +1,47 @@
-<div class="wrapper message-releaseview-manager">
+<div class="tat-view tat-releaseview">
 
-  <div movable-dialog title="'Filter'" ng-model="ctrl.filterPosition">
-    <div class="filter-dialog">
-      <form>
-        <div class="input-group">
-          <span class="input-group-addon" id="filter-fulltext"><i class="fa fa-font"></i></span>
-          <input type="text" class="form-control" placeholder="text" ng-model="ctrl.tmpFilter.filterText" aria-describedby="filter-fulltext">
-        </div>
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="done,testing" ng-model="ctrl.tmpFilter.filterInLabel" aria-describedby="filter-labels">
-          <span id="helpBlock" class="help-block">
-            in <i class="fa fa-tags"></i> : Contains one or many labels of this list
-          </span>
-        </div>
+  <div ng-hide="ctrl.data.isTopicRw" class="alert alert-info tat-alert-fixed">
+    <i class="fa fa-info-circle"></i> {{ 'shared_message_read_only' | translate }}
+  </div>
 
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="done,testing" ng-model="ctrl.tmpFilter.filterAndLabel" aria-describedby="filter-labels">
-          <span id="helpBlock" class="help-block">
-            all <i class="fa fa-tags"></i> : Contains all labels in this list
-          </span>
-        </div>
+  <!-- tat-msg-create -->
+  <div class="row tat-msg-create" data-ng-if="!ctrl.data.displayOnCall">
+    <form method="post" action="/">
+      <div class="tat-msg-input" ng-show="ctrl.data.showNewRelease && ctrl.data.isTopicRw">
+        <div class="message-popup-results"></div>
+        <textarea dir="auto" name="msg"
+          ng-enter="ctrl.createMessage()"
+          ng-focus="createMessageFocus=true"
+          ng-blur="createMessageFocus=false"
+          ng-model="ctrl.currentMessage"
+          placeholder="{{ 'release_message_compose_placeholder' | translate }}">
+        </textarea>
+        <i ng-click="ctrl.createMessage()" class="icon-paper-plane fa fa-send-o" title="{{ 'shared_message_send' | translate }}"></i>
+      </div>
 
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="feat,fix" ng-model="ctrl.tmpFilter.filterInTag" aria-describedby="filter-tags">
-          <span id="helpBlock" class="help-block">
-            in <i class="glyphicon glyphicon-copyright-mark"></i> : Contains one or many tags of this list
-          </span>
+      <div class="btn-group">
+        <a class="btn btn-default" ng-show="ctrl.data.showNewRelease" ng-click="ctrl.data.showNewRelease=false">
+          <i class="icon-cancel fa fa-times"></i>
+        </a>
+        <div class="btn btn-default" data-ng-show="!ctrl.data.showNewRelease && ctrl.data.isTopicRw"
+         data-ng-click="ctrl.data.showNewRelease = true">
+          <i class="fa fa-edit"></i>
         </div>
-
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="feat,fix" ng-model="ctrl.tmpFilter.filterAndTag" aria-describedby="filter-tags">
-          <span id="helpBlock" class="help-block">
-            all <i class="glyphicon glyphicon-copyright-mark"></i> : Contains all tags in this list
-          </span>
-        </div>
-
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary btn-xs" ng-click="ctrl.filterSearch()">Search</button>
-        </div>
-      </form>
+        <a class="btn btn-default" ng-click="ctrl.filterDialog.visible=!ctrl.filterDialog.visible" ng-class="{'open': ctrl.filterDialog.visible}">
+          <i class="fa fa-filter"></i>
+        </a>
+      </div>
+      <div ng-if="ctrl.currentMessage.length > 0" class="tat-remaining-chars" ng-hide="!createMessageFocus">
+        <i>{{ 'shared_message_characters_left' | translate }}: {{ ctrl.data.topic.maxlength - ctrl.currentMessage.length }}</i>
+      </div>
+      <div class="formatting-tips" aria-hidden="true" dir="auto"></div>
+    </form>
+    <message-filter-bar></message-filter-bar>
+    <div movable-dialog title="'Filter'" ng-model="ctrl.filterDialog">
+      <message-filter></message-filter>
     </div>
   </div>
-
-  <div data-ng-hide="ctrl.data.isTopicRw" class="alert alert-info pull-right">
-    {{ 'message_read_only' | translate}}
-  </div>
-
-  <div class="message-releaseview-create">
-      <div class="row releaseview-footer">
-					<form class="message-form" method="post" action="/">
-						<div style="display: flex">
-              <div class="input-message-container" data-ng-show="ctrl.data.showNewRelease && ctrl.data.isTopicRw">
-								<div class="message-popup-results">
-	              </div>
-								<textarea ng-enter="ctrl.createMessage()" dir="auto" name="msg" class="input-mdessage autogrow-short"
-                data-ng-model="ctrl.currentMessage" placeholder="#release:0.1.0 and your title if you want"
-                 style="height: 36px;"></textarea>
-                <i ng-click="ctrl.data.showNewRelease=false" class="icon-cancel fa fa-times"></i>
-								<i ng-click="ctrl.createMessage()" class="icon-new-release fa fa-send-o" title="{{ 'message_send' | translate}}"></i>
-							</div>
-              <div class="filter" data-ng-show="!ctrl.data.showNewRelease && ctrl.data.isTopicRw"
-               data-ng-click="ctrl.data.showNewRelease = true">
-                <i class="fa fa-edit"></i>
-              </div>
-              <div class="filter" data-ng-click="ctrl.filterPosition.visible = true">
-								<i class="fa fa-filter"></i>
-							</div>
-						</div>
-						<div data-ng-if="ctrl.currentMessage.length > 0" class="users-typing"><i>{{ 'message_characters_left' | translate }}: {{ctrl.data.topic.maxlength - ctrl.currentMessage.length}}</i></div>
-						<div class="formatting-tips" aria-hidden="true" dir="auto"></div>
-					</form>
-          <span class="message-filters">
-            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.text"><i class="fa fa-font"></i> {{ctrl.filter.text}}
-                <a role="button" ng-click="ctrl.tmpFilter.filterText = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
-            </span>
-            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.label">in <i class="fa fa-tags"></i> : {{ctrl.filter.label}}
-                <a role="button" ng-click="ctrl.tmpFilter.filterInLabel = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
-            </span>
-            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.andLabel">all <i class="fa fa-tags"></i> : {{ctrl.filter.andLabel}}
-                <a role="button" ng-click="ctrl.tmpFilter.filterAndLabel = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
-            </span>
-            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.tag">in <i class="glyphicon glyphicon-copyright-mark"></i> {{ctrl.filter.tag}}
-                <a role="button" ng-click="ctrl.tmpFilter.filterInTag = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
-            </span>
-            <span class="badge" data-ng-click="ctrl.filterPosition.visible = true" data-ng-if="ctrl.filter.andTag">all <i class="glyphicon glyphicon-copyright-mark"></i> : {{ctrl.filter.andTag}}
-                <a role="button" ng-click="ctrl.tmpFilter.filterAndTag = ''; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
-            </span>
-            <span class="badge" data-ng-if="ctrl.filter.idMessage"> <i class="fa fa-envelope" title="message"></i> {{ctrl.filter.idMessage}}
-                <a role="button" ng-click="ctrl.tmpFilter.idMessage = '-1'; ctrl.filterSearch()"><i class="fa fa-times"></i></a>
-            </span>
-          </span>
-			</div>
-  </div>
+  <!-- /tat-msg-create -->
 
   <div class="row">
     <div data-ng-class="(message && message.displayed) ? 'message-releaseview-list col-md-7': 'message-releaseview-list col-md-12'">
