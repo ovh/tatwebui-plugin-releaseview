@@ -161,12 +161,7 @@ angular.module('TatUi')
       if ('undefined' === typeof self.data.timer) {
         self.getNewMessages(); // Don't wait to execute first call
         self.data.timer = $interval(self.getNewMessages, timeInterval);
-        $scope.$on(
-          "$destroy",
-          function() {
-            self.stopTimer();
-          }
-        );
+        $scope.$on("$destroy", function() { self.stopTimer(); });
       }
     };
 
@@ -296,8 +291,7 @@ angular.module('TatUi')
         self.data.isTopicUpdatableAllMsg = self.data.topic.canUpdateAllMsg;
         self.data.isTopicDeletableAllMsg = self.data.topic.canDeleteAllMsg;
         if (self.data.topic.topic.indexOf("/Private/" +
-            Authentication.getIdentity().username + "/Bookmarks") ===
-          0) {
+            Authentication.getIdentity().username + "/Bookmarks") === 0) {
           self.data.isTopicBookmarks = true;
         } else if (self.data.topic.topic.indexOf("/Private/" +
             Authentication.getIdentity().username + "/Tasks") === 0) {
