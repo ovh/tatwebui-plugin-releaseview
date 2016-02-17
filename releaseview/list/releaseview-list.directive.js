@@ -187,7 +187,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
 
       this.urlMessage = function(message) {
         $rootScope.$broadcast('topic-change', {
-          topic: $scope.topic.topic,
+          topic: $scope.topic.topic.indexOf("/") === 0 ? $scope.topic.topic.substr(1) : $scope.topic.topic,
           idMessage: message._id,
           reload: true
         });
