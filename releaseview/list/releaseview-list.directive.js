@@ -66,7 +66,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
       this.replyMessage = function(message) {
         $scope.replying = false;
         TatEngineMessageRsc.create({
-          'topic': $scope.topic,
+          'topic': $scope.topic.topic.indexOf("/") === 0 ? $scope.topic.topic.substr(1) : $scope.topic.topic,
           'idReference': message._id,
           'text': self.replyText
         }).$promise.then(function(resp) {
@@ -100,7 +100,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
             self.removeLabel(message, l);
           }
         };
-        TatMessage.addLabel(message, $scope.topic, label, choices[label]);
+        TatMessage.addLabel(message, $scope.topic.topic, label, choices[label]);
       };
 
       /**
@@ -131,7 +131,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
       this.updateMessage = function(message) {
         message.updating = false;
         TatEngineMessageRsc.update({
-          'topic': $scope.topic,
+          'topic': $scope.topic.topic.indexOf("/") === 0 ? $scope.topic.topic.substr(1) : $scope.topic.topic,
           'idReference': message._id,
           'text': message.text,
           'action': 'update',
@@ -167,7 +167,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
             toRefresh = true;
             TatEngineMessageRsc.update({
               'action': 'unlabel',
-              'topic': $scope.topic,
+              'topic': $scope.topic.topic.indexOf("/") === 0 ? $scope.topic.topic.substr(1) : $scope.topic.topic,
               'idReference': $scope.message._id,
               'text': l.text
             }).$promise.then(function(resp) {
@@ -187,7 +187,7 @@ angular.module('TatUi').directive('messagesReleaseviewItem', function($compile) 
 
       this.urlMessage = function(message) {
         $rootScope.$broadcast('topic-change', {
-          topic: $scope.topic,
+          topic: $scope.topic.topic,
           idMessage: message._id,
           reload: true
         });
