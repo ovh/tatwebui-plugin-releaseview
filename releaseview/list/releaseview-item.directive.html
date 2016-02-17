@@ -18,7 +18,8 @@
           <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'done')">
               <i class="fa fa-tag"></i> Set to Done
           </button>
-
+        </div>
+        <div class="btn-group">
           <!-- Reply -->
           <button
             title="{{ 'shared_message_reply' | translate }}"
@@ -26,7 +27,7 @@
             ng-click="replying=!replying"
             ng-class="{'open': replying}"
             ng-disabled="message.updating || message.deleting">
-            <i class="fa fa-comments"></i>
+            <i class="fa fa-comments"></i> New Item in this release
           </button>
 
           <!-- Edit message -->
