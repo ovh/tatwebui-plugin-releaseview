@@ -4,44 +4,16 @@
     <i class="fa fa-info-circle"></i> {{ 'shared_message_read_only' | translate }}
   </div>
 
-  <!-- tat-msg-create -->
-  <div class="row tat-msg-create" data-ng-if="!ctrl.data.displayOnCall">
-    <form method="post" action="/">
-      <div class="tat-msg-input" ng-show="ctrl.data.showNewRelease && ctrl.data.isTopicRw">
-        <div class="message-popup-results"></div>
-        <textarea dir="auto" name="msg"
-          ng-enter="ctrl.createMessage()"
-          ng-focus="createMessageFocus=true"
-          ng-blur="createMessageFocus=false"
-          ng-model="ctrl.currentMessage"
-          placeholder="{{ 'release_message_compose_placeholder' | translate }}">
-        </textarea>
-        <i ng-click="ctrl.createMessage()" class="icon-paper-plane fa fa-send-o" title="{{ 'shared_message_send' | translate }}"></i>
-      </div>
-
-      <div class="btn-group">
-        <a class="btn btn-default" ng-show="ctrl.data.showNewRelease" ng-click="ctrl.data.showNewRelease=false">
-          <i class="icon-cancel fa fa-times"></i>
-        </a>
-        <div class="btn btn-default" data-ng-show="!ctrl.data.showNewRelease && ctrl.data.isTopicRw"
-         data-ng-click="ctrl.data.showNewRelease = true" tooltip="New Release">
-          <i class="fa fa-edit"></i>
-        </div>
-        <a class="btn btn-default" ng-click="ctrl.filterDialog.visible=!ctrl.filterDialog.visible" ng-class="{'open': ctrl.filterDialog.visible}">
-          <i class="fa fa-filter"></i>
-        </a>
-      </div>
-      <div ng-if="ctrl.currentMessage.length > 0" class="tat-remaining-chars" ng-hide="!createMessageFocus">
-        <i>{{ 'shared_message_characters_left' | translate }}: {{ ctrl.data.topic.maxlength - ctrl.currentMessage.length }}</i>
-      </div>
-      <div class="formatting-tips" aria-hidden="true" dir="auto"></div>
-    </form>
-    <message-filter-bar></message-filter-bar>
-    <div movable-dialog title="'Filter'" ng-model="ctrl.filterDialog">
-      <message-filter topic="ctrl.data.topic"></message-filter>
-    </div>
-  </div>
-  <!-- /tat-msg-create -->
+  <!-- message-box -->
+  <message-box placeholder="'release_message_compose_placeholder' | translate"
+    btn-expand="false"
+    topic="ctrl.data.topic"
+    is-topic-rw="ctrl.data.isTopicRw"
+    expand-replies="ctrl.data.expandReplies"
+    tooltip-btn-compact="'New Release'"
+    is-compact="true"
+    messages="ctrl.data.messages"></message-box>
+  <!-- /message-box -->
 
   <div class="row">
     <div data-ng-class="(message && message.displayed) ? 'message-releaseview-list col-md-7': 'message-releaseview-list col-md-12'">
@@ -108,9 +80,10 @@
     </div>
   </div>
 
-  <div class="row">
-    <button data-ng-disabled="!ctrl.data.displayMore" data-ng-click="ctrl.loadMore()" class="btn btn-default">
-      <span data-ng-show="!ctrl.data.displayMore">No</span> More
+  <div class="row more">
+    <button ng-disabled="!ctrl.data.displayMore" ng-click="ctrl.loadMore()" class="btn btn-default">
+      <span ng-show="ctrl.data.displayMore"><i class="fa fa-plus-circle"></i></span>
+      {{ 'release_message_show_more' | translate }}
     </button>
   </div>
 </div>

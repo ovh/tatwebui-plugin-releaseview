@@ -16,11 +16,9 @@ angular.module('TatUi')
     $rootScope,
     $stateParams,
     Authentication,
-    WebSocket,
     TatEngineMessagesRsc,
     TatEngineMessageRsc,
     TatEngineTopicRsc,
-    TatEngineUserRsc,
     TatEngine,
     TatFilter,
     Flash,
@@ -33,21 +31,17 @@ angular.module('TatUi')
     var self = this;
     self.filter = TatFilter.getCurrent();
     self.topic = $stateParams.topic;
-    self.filterDialog = { x: 380, y: 62, visible: false };
 
     self.data = {
       messages: [],
       requestFrequency: 5000,
       count: 40,
       skip: 0,
-      isTopicBookmarks: false,
-      isTopicTasks: false,
       isTopicDeletableMsg: false,
       isTopicDeletableAllMsg: false,
       isTopicUpdatableMsg: false,
       isTopicUpdatableAllMsg: false,
       isTopicRw: true,
-      displayOnCall: (self.topic.indexOf("OnCall") > 1),
       displayMore: true
     };
 
@@ -73,27 +67,6 @@ angular.module('TatUi')
     self.loadMore = function() {
       if (!self.loading) {
         self.moreMessage();
-      }
-    };
-
-    /**
-     * @ngdoc function
-     * @name createMessage
-     * @methodOf TatUi.controller:MessagesReleaseViewListCtrl
-     * @description Post a new message on the current topic
-     * @param {string} msg Message to post
-     */
-    self.createMessage = function() {
-      if (self.currentMessage.length > 0) {
-        TatEngineMessageRsc.create({
-          text: self.currentMessage,
-          topic: self.topic
-        }).$promise.then(function(data) {
-          self.currentMessage = '';
-          self.data.messages.unshift(data.message);
-        }, function(err) {
-          TatEngine.displayReturn(err);
-        });
       }
     };
 
@@ -174,11 +147,6 @@ angular.module('TatUi')
     self.stopTimer = function() {
       $interval.cancel(self.data.timer);
       self.data.timer = undefined;
-    };
-
-
-    self.onCall = function(text) {
-      self.currentMessage = text;
     };
 
     self.urlMessage = function(e, message) {
@@ -291,11 +259,7 @@ angular.module('TatUi')
         self.data.isTopicUpdatableAllMsg = self.data.topic.canUpdateAllMsg;
         self.data.isTopicDeletableAllMsg = self.data.topic.canDeleteAllMsg;
         if (self.data.topic.topic.indexOf("/Private/" +
-            Authentication.getIdentity().username + "/Bookmarks") === 0) {
-          self.data.isTopicBookmarks = true;
-        } else if (self.data.topic.topic.indexOf("/Private/" +
             Authentication.getIdentity().username + "/Tasks") === 0) {
-          self.data.isTopicTasks = true;
           self.data.isTopicDeletableMsg = true;
         } else if (self.data.topic.topic.indexOf("/Private/" +
             Authentication.getIdentity().username + "/DM/") === 0) {
@@ -354,26 +318,6 @@ angular.module('TatUi')
       $scope.message = null;
     };
 
-    /**
-     * @ngdoc function
-     * @name isDoing
-     * @methodOf TatUi.controller:messagesItem
-     * @description Return true if message contains a doing label
-     */
-    self.isDoing = function(message) {
-      return self.containsLabel(message, "doing");
-    };
-
-    /**
-     * @ngdoc function
-     * @name isDone
-     * @methodOf TatUi.controller:messagesItem
-     * @description Return true if message contains a done label
-     */
-    self.isDone = function(message) {
-      return self.containsLabel(message, "done");
-    };
-
     self.containsLabel = function(message, labelText) {
       if (message.inReplyOfIDRoot) {
         return false;
@@ -422,15 +366,13 @@ angular.module('TatUi')
       var keyword = appConfiguration.releaseview.keyword;
       for (var i = 0; i < message.replies.length; i++) {
         if (message.replies[i].text.indexOf("#") == 0 && message.replies) {
-          var mtype = message.replies[i].text
-            .substring(0, message.replies[i].text.indexOf(" "));
+          var mtype = message.replies[i].text.substring(0, message.replies[i].text.indexOf(" "));
           var mtype = this.capitalizeFirstLetter(mtype.replace("#", ""));
           // delete last ':'
           if (mtype.indexOf(":") == mtype.length - 1) {
             mtype = mtype.slice(0, -1);
           }
-          var text = message.replies[i].text
-            .substring(message.replies[i].text.indexOf(" "));
+          var text = message.replies[i].text.substring(message.replies[i].text.indexOf(" "));
           // msg starting with a tags, store it
           if (!sections[mtype]) {
             sections[mtype] = [];

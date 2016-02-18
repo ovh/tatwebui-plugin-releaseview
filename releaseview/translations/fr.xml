@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <translations>
   <translation id="release_message_compose_placeholder">#release:0.1.0 et votre titre si vous voulez</translation>
+  <translation id="release_message_show_more">Afficher plus de releases</translation>
 </translations>
