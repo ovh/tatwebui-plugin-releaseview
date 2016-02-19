@@ -23,9 +23,12 @@
           <td  style="border-left: 8px solid {{msg.releaseColor}};">
 
             <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
-              <h3><b><span ng-bind-html="msg.release"></span></b></h3>
+              <h3>
+                  <a class="release-title" title="{{ 'shared_message_url' | translate }}" ng-click="ctrl.urlMessage($event, msg)" ng-bind-html="msg.release">
+                  </a>
+              </h3>
               <span data-ng-if="msg.releaseDate"> {{msg.releaseDate}}</span>
-              <span data-ng-if="!msg.releaseDate"> {{msg.dateUpdate * 1000  | amCalendar}}</span>
+              <span data-ng-if="!msg.releaseDate"> {{msg.dateUpdate * 1000 | amCalendar}}</span>
             </div>
             <span class="badge" data-ng-repeat="attr in msg.attrs track by $index">
               {{attr}}
