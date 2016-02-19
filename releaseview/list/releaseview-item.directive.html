@@ -6,16 +6,16 @@
         <!-- Message controls -->
         <div class="btn-group">
 
-          <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'develop')">
+          <button class="btn btn-default" data-ng-click="ctrl.setTo(message, 'develop')">
               <i class="fa fa-tag"></i> Set to Develop
           </button>
-          <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'staging')">
+          <button class="btn btn-default" data-ng-click="ctrl.setTo(message, 'staging')">
               <i class="fa fa-tag"></i> Set to Staging
           </button>
-          <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'preprod')">
+          <button class="btn btn-default" data-ng-click="ctrl.setTo(message, 'preprod')">
               <i class="fa fa-tag"></i> Set to Preprod
           </button>
-          <button class="btn btn-default" data-ng-click="MessageReleaseviewItemCtrl.setTo(message, 'done')">
+          <button class="btn btn-default" data-ng-click="ctrl.setTo(message, 'done')">
               <i class="fa fa-tag"></i> Set to Done
           </button>
         </div>
@@ -74,31 +74,22 @@
 
       <user-display username="message.author.username" fullname="message.author.fullname"></user-display>
       <span class="message-releaseview-date">{{message.dateCreation * 1000| amCalendar}}</span>
-      <span class="badge tlabel"
-            style="background-color: {{label.color}}; color: {{MessageReleaseviewItemCtrl.getBrightness(label.color)>128 ? '#000000' : '#ffffff' }}"
-            data-ng-repeat="label in message.labels track by label.text">
-          <i class="fa fa-tags"></i> {{label.text}}
-          <a role="button" data-ng-click="MessageReleaseviewItemCtrl.removeLabel(message, label.text)">X</a>
+      <span
+        class="tat-label"
+        style="background-color: {{ label.color }}; border-color: {{ label.color }}; color: {{ ctrl.getBrightness(label.color)>130 ? '#000000' : '#ffffff' }}"
+        ng-repeat="label in message.labels track by $index">
+        {{label.text}}
+        <a role="button" ng-click="ctrl.removeLabel(message, label.text)">X</a>
       </span>
 
       <div class="message-releaseview-content" ng-bind-html="message.text | linky | nl2br | parseTags:message.tags"></div>
 
-      <div class="message-releaseview-reply" data-ng-show="replying">
-          <textarea class="form-control" data-ng-model="MessageReleaseviewItemCtrl.replyText"></textarea>
-          <button class="btn btn-primary"
-                  data-ng-click="MessageReleaseviewItemCtrl.replyMessage(message); $event.stopPropagation();">
-              <i class="fa fa-reply-all"></i>
-              Reply
-          </button>
-          <button class="btn btn-default" data-ng-click="replying=false">
-              <i class="fa fa-ban"></i>
-              {{ 'shared_common_cancel' | translate }}
-          </button>
-      </div>
+      <message-reply ng-show="replying" topic="topic" is-replying="replying" is-topic-rw="ctrl.isTopicRw" message="message"></message-reply>
+
       <div class="message-reply" data-ng-show="message.updating">
           <textarea class="form-control" data-ng-model="message.text"></textarea>
           <button class="btn btn-primary"
-                  data-ng-click="MessageReleaseviewItemCtrl.updateMessage(message); $event.stopPropagation();">
+                  data-ng-click="ctrl.updateMessage(message); $event.stopPropagation();">
               <i class="fa fa-pencil-square-o"></i>
               Update
           </button>
@@ -109,7 +100,7 @@
       </div>
       <div data-ng-show="message.deleting">
           <button class="btn btn-danger"
-                  data-ng-click="MessageReleaseviewItemCtrl.deleteMessage(message);">
+                  data-ng-click="ctrl.deleteMessage(message);">
               <i class="fa fa-trash"></i>
               Confirm Delete <span ng-show="message.replies.length">message and replies</span>
           </button>
@@ -144,7 +135,7 @@
           <div ng-bind-html="reply.text | linky | nl2br | parseTags:reply.tags"></div>
           <div ng-if="reply.updating">
             <textarea class="form-control" data-ng-model="reply.text"></textarea>
-            <button class="btn btn-primary" data-ng-click="MessageReleaseviewItemCtrl.updateMessage(reply);">
+            <button class="btn btn-primary" data-ng-click="ctrl.updateMessage(reply);">
                 <i class="fa fa-pencil-square-o"></i>
                 Update
             </button>
@@ -155,7 +146,7 @@
           </div>
           <div data-ng-if="reply.deleting">
               <button class="btn btn-danger"
-                      data-ng-click="MessageReleaseviewItemCtrl.deleteMessage(reply);">
+                      data-ng-click="ctrl.deleteMessage(reply);">
                   <i class="fa fa-trash"></i>
                   Confirm Delete
               </button>

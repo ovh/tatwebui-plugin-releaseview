@@ -31,11 +31,11 @@
               {{attr}}
             </span>
 
-            <span data-ng-repeat="label in msg.labels track by $index"
-                class="badge tlabel"
-                style="background-color: {{label.color}}; color: {{ctrl.getBrightness(label.color)>128 ? '#000000' : '#ffffff' }}">
-              <i class="fa fa-tags"></i> {{label.text}}
+            <span ng-repeat="label in msg.labels track by $index" class="tat-label"
+              style="background-color: {{ label.color }}; border-right-color: {{ label.color }}; color: {{ ctrl.getBrightness(label.color)>130 ? '#000000' : '#ffffff' }}">
+              {{ label.text }}
             </span>
+
           </td>
           <td class="message-releaseview-wrapper">
               <h4 ng-bind-html="ctrl.getTitleExceptRelease(msg)"></h4>
