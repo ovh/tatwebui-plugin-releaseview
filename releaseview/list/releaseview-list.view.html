@@ -24,7 +24,7 @@
 
             <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
               <h3>
-                  <a class="release-title" title="{{ 'shared_message_url' | translate }}" ng-click="ctrl.urlMessage($event, msg)" ng-bind-html="msg.release">
+                  <a class="release-title" title="{{ 'shared_message_url' | translate }}" href="{{ctrl.getUrlMessage(msg)}}" ng-click="ctrl.urlMessage($event, msg)" ng-bind-html="msg.release">
                   </a>
               </h3>
               <span data-ng-if="msg.releaseDate"> {{msg.releaseDate}}</span>

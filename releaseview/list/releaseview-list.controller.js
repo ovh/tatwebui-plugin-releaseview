@@ -154,6 +154,10 @@ angular.module('TatUi')
       TatFilter.setFilters({idMessage: message._id}).search();
     };
 
+    self.getUrlMessage = function(message) {
+      return "/releaseview/list"+self.data.topic.topic+"?idMessage=" + message._id;
+    };
+
     /**
      * @ngdoc function
      * @name buildFilter
