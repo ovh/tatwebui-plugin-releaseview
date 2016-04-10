@@ -234,7 +234,7 @@ angular.module('TatUi')
      */
     self.digestInformations = function(data) {
       self.data.isTopicRw = data.isTopicRw;
-      if (_.contains(Authentication.getIdentity().favoritesTopics, '/' + self.topic)) {
+      if (_.includes(Authentication.getIdentity().favoritesTopics, '/' + self.topic)) {
         self.data.isFavoriteTopic = true;
       }
       self.data.messages = self.mergeMessages(self.data.messages, data.messages);
@@ -365,7 +365,10 @@ angular.module('TatUi')
 
     this.computeDetails = function(message) {
       var sections = {};
-      var keyword = appConfiguration.releaseview.keyword;
+      var keyword = "";
+      if (appConfiguration.releaseview) {
+        keyword = appConfiguration.releaseview.keyword;
+      }
       for (var i = 0; i < message.replies.length; i++) {
         if (message.replies[i].text.indexOf("#") == 0 && message.replies) {
           var mtype = message.replies[i].text.substring(0, message.replies[i].text.indexOf(" "));
@@ -380,8 +383,10 @@ angular.module('TatUi')
             sections[mtype] = [];
           }
 
-          var regex = new RegExp("#" + keyword + ":", 'g');
-          text = text.replace(regex, appConfiguration.releaseview.tracker);
+          if (appConfiguration.releaseview) {
+            var regex = new RegExp("#" + keyword + ":", 'g');
+            text = text.replace(regex, appConfiguration.releaseview.tracker);
+          }
           sections[mtype].push(text);
         }
       }
