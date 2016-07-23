@@ -3,7 +3,6 @@
 /**
  * @ngdoc controller
  * @name TatUi.controller:MessagesReleaseViewListCtrl
- * @requires TatUi.WebSocket            Websocket manager
  * @requires TatUi.TatEngineMessagesRsc Tat Engine Resource Messages
  * @requires TatUi.TatEngineMessageRsc  Tat Engine Resource Message
  * @requires TatUi.TatEngine            Global Tat Engine service
@@ -21,6 +20,7 @@ angular.module('TatUi')
     TatEngineTopicRsc,
     TatEngine,
     TatFilter,
+    TatTopic,
     Flash,
     $translate,
     $interval,
@@ -128,9 +128,10 @@ angular.module('TatUi')
      * @name beginTimer
      * @methodOf TatUi.controller:MessagesReleaseViewListCtrl
      * @description Launch the timer to request messages at regular time interval
-     * @param {Integer} timeInterval Milliseconds between calls
      */
-    self.beginTimer = function(timeInterval) {
+    self.beginTimer = function() {
+      self.data = angular.extend(self.data, TatTopic.getDataTopic());
+      var timeInterval = self.data.requestFrequency;
       if ('undefined' === typeof self.data.timer) {
         self.getNewMessages(); // Don't wait to execute first call
         self.data.timer = $interval(self.getNewMessages, timeInterval);
@@ -147,15 +148,6 @@ angular.module('TatUi')
     self.stopTimer = function() {
       $interval.cancel(self.data.timer);
       self.data.timer = undefined;
-    };
-
-    self.urlMessage = function(e, message) {
-      e.preventDefault();
-      TatFilter.setFilters({idMessage: message._id}).search();
-    };
-
-    self.getUrlMessage = function(message) {
-      return "/releaseview/list"+self.data.topic.topic+"?idMessage=" + message._id;
     };
 
     /**
@@ -248,32 +240,7 @@ angular.module('TatUi')
      * @description Initialize list messages page. Get list of messages from Tat Engine
      */
     self.init = function() {
-      TatEngineTopicRsc.oneTopic({
-        action: self.topic
-      }).$promise.then(function(data) {
-        if (!data.topic) {
-          Flash.create('danger', $translate.instant('topics_notopic'));
-          return;
-        }
-        self.data.topic = data.topic;
-        self.data.isTopicUpdatableMsg = self.data.topic.canUpdateMsg;
-        self.data.isTopicDeletableMsg = self.data.topic.canDeleteMsg;
-        self.data.isTopicUpdatableAllMsg = self.data.topic.canUpdateAllMsg;
-        self.data.isTopicDeletableAllMsg = self.data.topic.canDeleteAllMsg;
-        if (self.data.topic.topic.indexOf("/Private/" +
-            Authentication.getIdentity().username + "/Tasks") === 0) {
-          self.data.isTopicDeletableMsg = true;
-        } else if (self.data.topic.topic.indexOf("/Private/" +
-            Authentication.getIdentity().username + "/DM/") === 0) {
-          self.data.isTopicDeletableMsg = false;
-        } else if (self.data.topic.topic.indexOf("/Private/" +
-            Authentication.getIdentity().username) === 0) {
-          self.data.isTopicDeletableMsg = true;
-        }
-        self.beginTimer(self.data.requestFrequency);
-      }, function(err) {
-        TatEngine.displayReturn(err);
-      });
+      TatTopic.computeTopic(self.topic, self.beginTimer);
     };
 
     /**
@@ -283,12 +250,9 @@ angular.module('TatUi')
      * @description Refresh all the messages
      */
     self.refresh = function() {
-      $rootScope.$broadcast('loading', true);
       self.data.currentTimestamp = Math.ceil(new Date().getTime() / 1000);
       self.data.messages = [];
-      self.moreMessage().then(function() {
-        $rootScope.$broadcast('loading', false);
-      });
+      self.moreMessage();
     };
 
     self.setMessage = function(message) {

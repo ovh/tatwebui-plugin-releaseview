@@ -1,91 +1,92 @@
-<div class="tat-view tat-releaseview">
+<div class="page-content">
 
-  <div ng-hide="ctrl.data.isTopicRw" class="alert alert-info tat-alert-fixed">
-    <i class="fa fa-info-circle"></i> {{ 'shared_message_read_only' | translate }}
-  </div>
+  <!-- Header Bar -->
+  <header ng-if="ctrl.data.topic" topic="ctrl.data.topic"></header>
 
-  <!-- message-box -->
-  <message-box placeholder="'release_message_compose_placeholder' | translate"
-    btn-expand="false"
-    topic="ctrl.data.topic"
-    is-topic-rw="ctrl.data.isTopicRw"
-    expand-replies="ctrl.data.expandReplies"
-    tooltip-btn-compact="'New Release'"
-    is-compact="true"
-    messages="ctrl.data.messages"></message-box>
-  <!-- /message-box -->
+  <div class="tat-view tat-releaseview">
 
-  <div class="row">
-    <div data-ng-class="(message && message.displayed) ? 'message-releaseview-list col-md-7': 'message-releaseview-list col-md-12'">
-      <table class="table table-striped">
-        <tbody>
-        <tr ng-repeat="msg in ctrl.data.messages" ng-class="msg.displayed ? '': ''" class="message-releaseview-wrapper" ng-show="!msg.hide">
-          <td  style="border-left: 8px solid {{msg.releaseColor}};">
+    <div ng-hide="ctrl.data.isTopicRw" class="alert alert-info tat-alert-fixed">
+      <i class="fa fa-info-circle"></i> {{ 'shared_message_read_only' | translate }}
+    </div>
 
-            <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
-              <h3>
-                  <a class="release-title" title="{{ 'shared_message_url' | translate }}" href="{{ctrl.getUrlMessage(msg)}}" ng-click="ctrl.urlMessage($event, msg)" ng-bind-html="msg.release">
-                  </a>
-              </h3>
-              <span data-ng-if="msg.releaseDate"> {{msg.releaseDate}}</span>
-              <span data-ng-if="!msg.releaseDate"> {{msg.dateUpdate * 1000 | amCalendar}}</span>
-            </div>
-            <span class="badge" data-ng-repeat="attr in msg.attrs track by $index">
-              {{attr}}
-            </span>
+    <!-- message-box -->
+    <message-box placeholder="{{'release_message_compose_placeholder' | translate}}"
+      btn-expand="false"
+      topic="ctrl.data.topic"
+      is-topic-rw="ctrl.data.isTopicRw"
+      expand-replies="ctrl.data.expandReplies"
+      tooltip-btn-compact="'New Release'"
+      is-compact="true"
+      messages="ctrl.data.messages"></message-box>
+    <!-- /message-box -->
 
-            <span ng-repeat="label in msg.labels track by $index" class="tat-label"
-              style="background-color: {{ label.color }}; border-right-color: {{ label.color }}; color: {{ ctrl.getBrightness(label.color)>130 ? '#000000' : '#ffffff' }}">
-              {{ label.text }}
-            </span>
+    <div class="row">
+      <div data-ng-class="(message && message.displayed) ? 'message-releaseview-list col-md-7': 'message-releaseview-list col-md-12'">
+        <table class="table table-striped">
+          <tbody>
+          <tr ng-repeat="msg in ctrl.data.messages"  ng-class="msg.displayed ? 'open': ''" class="tat-msg-wrapper" ng-show="!msg.hide">
+            <td style="border-left: 8px solid {{msg.releaseColor}};">
 
-          </td>
-          <td class="message-releaseview-wrapper">
-              <h4 ng-bind-html="ctrl.getTitleExceptRelease(msg)"></h4>
-              <table>
-                <tbody>
-                <tr data-ng-repeat="(key, replies) in msg.sections track by $index">
-                  <td>
-                    <div>
-                      <h4>{{key}}</h4>
-                    </div>
-                    <ul>
+              <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
+                <h3>
+                    <a class="release-title" title="{{ 'shared_message_url' | translate }}"
+                       ng-href="{{urlMessage(msg)}}" ng-click="setFilterMessage($event, msg)"
+                       ng-bind-html="msg.release">
+                    </a>
+                </h3>
+                <span data-ng-if="msg.releaseDate"> {{msg.releaseDate}}</span>
+                <span data-ng-if="!msg.releaseDate"> {{msg.dateUpdate * 1000 | amCalendar}}</span>
+              </div>
+              <span class="badge" data-ng-repeat="attr in msg.attrs track by $index">
+                {{attr}}
+              </span>
+
+              <span ng-repeat="label in msg.labels track by $index" class="tat-label"
+                style="background-color: {{ label.color }}; border-right-color: {{ label.color }}; color: {{ ctrl.getBrightness(label.color)>130 ? '#000000' : '#ffffff' }}">
+                {{ label.text }}
+              </span>
+            </td>
+            <td>
+                <h4 ng-bind-html="ctrl.getTitleExceptRelease(msg)"></h4>
+
+                <div data-ng-repeat="(key, replies) in msg.sections track by $index">
+                  <h4>{{key}}</h4>
+                  <ul>
                       <li ng-repeat="r in replies track by $index" ng-bind-html="r | linky">
                       </li>
-                    </ul>
-                  </td>
-               </tr>
-               </tbody>
-             </table>
-          </td>
-          <td>
-            <a ng-class="msg.displayed ? 'btn btn-xs btn-primary': 'btn btn-xs'" data-ng-href="#" data-ng-click="ctrl.toggleMessage(msg)">
-              <i ng-class="msg.displayed ? 'fa fa-angle-down': 'fa fa-angle-right'"></i></a>
-          </td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
-    <div class="col-md-5" ng-if="message && message.displayed">
-      <div class="releaseview-message-right">
-        <button class="btn btn-default btn-xs pull-right" data-ng-click="ctrl.closeMessage()">X</button>
-        <messages-releaseview-item
-               data-topic="ctrl.data.topic"
-               data-message="message"
-               data-is-topic-tasks="ctrl.isTopicTasks"
-               data-is-topic-deletable-msg="ctrl.data.isTopicDeletableMsg"
-               data-is-topic-updatable-msg="ctrl.data.isTopicUpdatableMsg"
-               data-is-topic-deletable-all-msg="ctrl.data.isTopicDeletableAllMsg"
-               data-is-topic-updatable-all-msg="ctrl.data.isTopicUpdatableAllMsg"
-               data-is-topic-rw="ctrl.isTopicRw"></messages-releaseview-item>
+                  </ul>
+                </div>
+            </td>
+            <td>
+              <a ng-href="#" ng-click="ctrl.toggleMessage(msg)" class="tat-msg-toggle">
+                <i ng-class="msg.displayed ? 'fa fa-angle-left': 'fa fa-angle-right'"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      <div class="col-md-5" ng-if="message && message.displayed">
+        <div class="releaseview-message-right">
+          <button class="btn btn-default btn-xs pull-right" data-ng-click="ctrl.closeMessage()">X</button>
+          <messages-releaseview-item
+                 data-topic="ctrl.data.topic"
+                 data-message="message"
+                 data-is-topic-tasks="ctrl.isTopicTasks"
+                 data-is-topic-deletable-msg="ctrl.data.isTopicDeletableMsg"
+                 data-is-topic-updatable-msg="ctrl.data.isTopicUpdatableMsg"
+                 data-is-topic-deletable-all-msg="ctrl.data.isTopicDeletableAllMsg"
+                 data-is-topic-updatable-all-msg="ctrl.data.isTopicUpdatableAllMsg"
+                 data-is-topic-rw="ctrl.isTopicRw"></messages-releaseview-item>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="row more">
-    <button ng-disabled="!ctrl.data.displayMore" ng-click="ctrl.loadMore()" class="btn btn-default">
-      <span ng-show="ctrl.data.displayMore"><i class="fa fa-plus-circle"></i></span>
-      {{ 'release_message_show_more' | translate }}
-    </button>
+    <div class="row more">
+      <button ng-disabled="!ctrl.data.displayMore" ng-click="ctrl.loadMore()" class="btn btn-default">
+        <span ng-show="ctrl.data.displayMore"><i class="fa fa-plus-circle"></i></span>
+        {{ 'release_message_show_more' | translate }}
+      </button>
+    </div>
   </div>
 </div>
