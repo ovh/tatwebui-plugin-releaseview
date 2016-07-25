@@ -14,17 +14,17 @@ angular.module('TatUi')
     $scope,
     $rootScope,
     $stateParams,
+    $translate,
+    $interval,
     Authentication,
+    appConfiguration,
+    Flash,
     TatEngineMessagesRsc,
     TatEngineMessageRsc,
     TatEngineTopicRsc,
     TatEngine,
     TatFilter,
-    TatTopic,
-    Flash,
-    $translate,
-    $interval,
-    appConfiguration
+    TatTopic
   ) {
     'use strict';
 
@@ -88,9 +88,6 @@ angular.module('TatUi')
      this.mergeMessages = function(dest, source) {
        if (source && _.isArray(source)) {
          for (var i = 0; i < source.length; i++) {
-           if (source[i].replies) {
-             this.computeDetails(source[i]);
-           }
            var origin = _.find(dest, {
              _id: source[i]._id
            });
@@ -101,11 +98,17 @@ angular.module('TatUi')
              self.mergeMessages(origin.replies, source[i].replies);
              origin.labels = source[i].labels;
              origin.tags = source[i].tags;
+             if (origin.replies) {
+               this.computeDetails(origin);
+             }
            } else {
              if (!self.data.intervalTimeStamp) {
                self.data.intervalTimeStamp = source[i].dateUpdate;
              } else if (source[i].dateUpdate > self.data.intervalTimeStamp) {
                self.data.intervalTimeStamp = source[i].dateUpdate;
+             }
+             if (source[i].replies) {
+               this.computeDetails(source[i]);
              }
              dest.push(source[i]);
              dest.sort(function(a, b) {
