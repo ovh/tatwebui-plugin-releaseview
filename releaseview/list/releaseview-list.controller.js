@@ -178,12 +178,15 @@ angular.module('TatUi')
       }
       self.loading = true;
       self.currentDate = self.getCurrentDate();
-      var filter = self.buildFilter({
+      var filterAttrs = {
         topic: self.topic,
         treeView: 'onetree',
-        onlyMsgRoot: 'true',
-        dateMinUpdate: self.data.intervalTimeStamp
-      });
+        onlyMsgRoot: 'true'
+      };
+      if (!TatFilter.containsDateFilter) {
+        filterAttrs.dateMinUpdate = self.data.intervalTimeStamp;
+      }
+      var filter = self.buildFilter(filterAttrs);
       return TatEngineMessagesRsc.list(filter).$promise.then(function(data) {
         self.digestInformations(data);
       }, function(err) {
