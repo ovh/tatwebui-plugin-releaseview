@@ -25,7 +25,7 @@
         <table class="table table-striped">
           <tbody>
           <tr ng-repeat="msg in ctrl.data.messages"  ng-class="msg.displayed ? 'open': ''" class="tat-msg-wrapper" ng-show="!msg.hide">
-            <td style="border-left: 8px solid {{msg.releaseColor}};">
+            <td style="border-left: 8px solid {{msg.releaseColor}};width:150px;">
 
               <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
                 <h3>

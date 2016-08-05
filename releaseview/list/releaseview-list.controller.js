@@ -339,15 +339,16 @@ angular.module('TatUi')
       if (appConfiguration.releaseview) {
         keyword = appConfiguration.releaseview.keyword;
       }
-      for (var i = 0; i < message.replies.length; i++) {
-        if (message.replies[i].text.indexOf("#") == 0 && message.replies) {
-          var mtype = message.replies[i].text.substring(0, message.replies[i].text.indexOf(" "));
+      var replies = _.sortBy(message.replies, function(s) { return s.text; });
+      for (var i = 0; i < replies.length; i++) {
+        if (replies[i].text.indexOf("#") == 0 && replies) {
+          var mtype = replies[i].text.substring(0, replies[i].text.indexOf(" "));
           var mtype = this.capitalizeFirstLetter(mtype.replace("#", ""));
           // delete last ':'
           if (mtype.indexOf(":") == mtype.length - 1) {
             mtype = mtype.slice(0, -1);
           }
-          var text = message.replies[i].text.substring(message.replies[i].text.indexOf(" "));
+          var text = replies[i].text.substring(replies[i].text.indexOf(" "));
           // msg starting with a tags, store it
           if (!sections[mtype]) {
             sections[mtype] = [];
@@ -358,6 +359,7 @@ angular.module('TatUi')
             text = text.replace(regex, appConfiguration.releaseview.tracker);
           }
           sections[mtype].push(text);
+          sections[mtype] = _.sortBy(sections[mtype], function(s) { return s.text; });
         }
       }
       if (message.labels) {
