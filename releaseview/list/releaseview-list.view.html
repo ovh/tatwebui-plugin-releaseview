@@ -20,6 +20,8 @@
       messages="ctrl.data.messages"></message-box>
     <!-- /message-box -->
 
+    <message-load is-init-loading="ctrl.data.initialLoading"></message-load>
+
     <div class="row">
       <div data-ng-class="(message && message.displayed) ? 'message-releaseview-list col-md-7': 'message-releaseview-list col-md-12'">
         <table class="table table-striped">
