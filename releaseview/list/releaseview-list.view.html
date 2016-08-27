@@ -26,7 +26,7 @@
       <div data-ng-class="(message && message.displayed) ? 'message-releaseview-list col-md-7': 'message-releaseview-list col-md-12'">
         <table class="table table-striped">
           <tbody>
-          <tr ng-repeat="msg in ctrl.data.messages"  ng-class="msg.displayed ? 'open': ''" class="tat-msg-wrapper" ng-show="!msg.hide">
+          <tr ng-click="ctrl.toggleMessage(msg)" ng-repeat="msg in ctrl.data.messages"  ng-class="msg.displayed ? 'open': ''" class="tat-msg-wrapper" ng-show="!msg.hide">
             <td style="border-left: 8px solid {{msg.releaseColor}};width:150px;">
 
               <div title="creation: {{msg.dateCreation * 1000| amCalendar}}, update: {{msg.dateUpdate * 1000| amCalendar}}">
@@ -54,13 +54,14 @@
                 <div data-ng-repeat="(key, replies) in msg.sections track by $index">
                   <h4>{{key}}</h4>
                   <ul>
-                      <li ng-repeat="r in replies track by $index" ng-bind-html="r | linky">
+                      <li ng-repeat="r in replies track by $index">
+                        <span ng-click="$event.stopPropagation();" ng-bind-html="r | linky"> </span>
                       </li>
                   </ul>
                 </div>
             </td>
             <td>
-              <a ng-href="#" ng-click="ctrl.toggleMessage(msg)" class="tat-msg-toggle">
+              <a ng-href="#" class="tat-msg-toggle">
                 <i ng-class="msg.displayed ? 'fa fa-angle-left': 'fa fa-angle-right'"></i>
               </a>
             </td>
