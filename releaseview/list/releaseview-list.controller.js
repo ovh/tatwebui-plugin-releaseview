@@ -112,18 +112,10 @@ angular.module('TatUi')
                this.computeDetails(source[i]);
              }
              dest.push(source[i]);
-             dest.sort(function(a, b) {
-               if (a.dateCreation > b.dateCreation) {
-                 return -1;
-               }
-               if (a.dateCreation < b.dateCreation) {
-                 return 1;
-               }
-               return 0;
-             });
            }
          }
        }
+       TatFilter.sortMessages(dest);
        return dest;
      };
 
