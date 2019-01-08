@@ -330,10 +330,6 @@ angular.module('TatUi')
 
     this.computeDetails = function(message) {
       var sections = {};
-      var keyword = "";
-      if (appConfiguration.releaseview) {
-        keyword = appConfiguration.releaseview.keyword;
-      }
       var replies = _.sortBy(message.replies, function(s) { return s.text; });
       for (var i = 0; i < replies.length; i++) {
         if (replies[i].text.indexOf("#") == 0 && replies) {
@@ -349,9 +345,11 @@ angular.module('TatUi')
             sections[mtype] = [];
           }
 
-          if (appConfiguration.releaseview) {
-            var regex = new RegExp("#" + keyword + ":", 'g');
-            text = text.replace(regex, appConfiguration.releaseview.tracker);
+          if (appConfiguration.releaseview && appConfiguration.releaseview.length > 0) {
+            for (var j = 0; j < appConfiguration.releaseview.length; j++) {
+              var regex = new RegExp("#" + appConfiguration.releaseview[j].keyword + ":", 'g');
+              text = text.replace(regex, appConfiguration.releaseview[j].tracker);
+            }
           }
           sections[mtype].push(text);
           sections[mtype] = _.sortBy(sections[mtype], function(s) { return s.text; });
